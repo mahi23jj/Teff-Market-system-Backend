@@ -99,7 +99,7 @@ src/
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/teffmarket-backend.git
+git clone https://github.com/mahi23jj/Teff-Market-system-Backend.git
 
 cd teffmarket-backend
 
