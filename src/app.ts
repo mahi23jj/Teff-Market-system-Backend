@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from 'express';
+import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -14,6 +15,9 @@ import adminproductrouter from './routes/admin/product.routers.js';
 import adminDashboardRouter from './routes/admin/dashborde.router.js';
 import farmerDashboardRouter from './routes/farmer/dashborde.router.js';
 import customerDashboardRouter from './routes/customer/dashbord.routers.js';
+import { connectRedis } from './service/farmer/cache/redis.service.js';
+import { Server } from 'socket.io';
+import { initMarketSocket } from './service/farmer/socket/market.socket.js';
 
 
 
@@ -23,26 +27,12 @@ import customerDashboardRouter from './routes/customer/dashbord.routers.js';
 
 
 
-// import { requestLogger } from './middleware/loggemiddleware.js';
-// import { authRouter } from './routes/auth.router.js';
-// import { sellerRouter } from './routes/seller.router.js';
-// // import { adminRouter } from './routers/admin.router.js';
-// import { userRouter } from './routes/user.router.js';
-// import { openApiSpec } from './docs/openapi.js';
-// import { errorHandler } from './errors/apperror.js';
-// import { categoryRouter } from './routes/category.router.js';
-// import { productRouter } from './routes/product.router.js';
-// import { followRouter } from './routes/follow.router.js';
-// import { reportRouter } from './routes/report.router.js';
-// import { saveProductRouter } from './routes/save_product.router.js';
-// import { reviewRouter } from './routes/review.router.js';
-// import { shopRouter } from './routes/shop.router.js';
-// import { enggagementRouter } from './routes/enggagement.router.js';
-// import { botRouter } from './lib/Telegram_webhook.js';
+
 
 
 
 export const app = express();
+export const server = createServer(app);
 
 
 
@@ -61,7 +51,7 @@ if (config.isdev) {
   //   origin: ["https://teff-store.com"], // only your deployed frontend
   //   credentials: true,
   // }));Nn
-    app.use(cors({
+  app.use(cors({
     origin: (_origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       callback(null, true); // allow all origins
     },
@@ -69,6 +59,19 @@ if (config.isdev) {
   }));
 }
 
+
+connectRedis();
+
+
+const io =
+  new Server(server, {
+    cors: {
+      origin: "*"
+    }
+  });
+
+
+initMarketSocket(io);
 
 
 app.use(helmet());

@@ -1,39 +1,49 @@
-import { FarmerDashboardController } from "../../controllers/farmer/dashbord.controller";
-import { authenticate } from "../../middleware/authenticate";
-import { authorize } from "../../middleware/authorize";
 import { Router } from "express";
-
+import { MarketController } from "../../controllers/farmer/dashbord.controller.js";
+import { authenticate } from "../../middleware/authenticate.js";
+import { authorize } from "../../middleware/authorize.js";
 
 const farmerDashboardRouter = Router();
+const controller = new MarketController();
 
-const controller = new FarmerDashboardController();
-
+// 👨‍🌾 Farmer Dashboard Overview
 farmerDashboardRouter.get(
-  "/dashboard/overview",
+  "/farmer-overview",
   authenticate,
   authorize("farmer"),
-    controller.overview.bind(controller)
+  controller.farmerOverview.bind(controller)
 );
 
+// 📈 Market Intelligence Overview
 farmerDashboardRouter.get(
-  "/dashboard/trend",
+  "/overview",
+  authenticate,
+  authorize("farmer"),
+  controller.marketOverview.bind(controller)
+);
+
+// 📊 Market Activity
+farmerDashboardRouter.get(
+  "/activity",
+  authenticate,
+  authorize("farmer"),
+  controller.activity.bind(controller)
+);
+
+// 📉 Market Trend
+farmerDashboardRouter.get(
+  "/trend",
   authenticate,
   authorize("farmer"),
   controller.trend.bind(controller)
 );
 
+// 🏥 Market Health
 farmerDashboardRouter.get(
-  "/dashboard/stats/:productTypeId",
+  "/health",
   authenticate,
   authorize("farmer"),
-  controller.stats.bind(controller)
-);
-
-farmerDashboardRouter.get(
-  "/dashboard/recent-sales",
-  authenticate,
-  authorize("farmer"),
-  controller.recentSales.bind(controller)
+  controller.health.bind(controller)
 );
 
 export default farmerDashboardRouter;

@@ -1,13 +1,13 @@
 // src/server.ts
 // import express from 'express';
 import { config } from './config.js';
-import { app } from './app.js';
+import { server } from './app.js';
 
 
 async function main() {
   // start server
   const port = config.port;
-  app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`🚀 Server running on http://localhost:${port}`);
   });
 }

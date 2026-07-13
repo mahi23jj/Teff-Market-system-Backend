@@ -13,3 +13,6 @@ dist
 src/**/*.js
 
 /src/generated/prisma
+
+
+
