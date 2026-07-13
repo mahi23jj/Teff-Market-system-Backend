@@ -101,9 +101,15 @@ export class OrderService {
           data: {
             quantity: {
               decrement: order.quantity,
-            },
-            completionDate: new Date(),
+            }
+
           },
+        });
+
+        await tx.order.update({
+          where: { id: orderId },
+          data: { completionDate: new Date() },
+
         });
       }
 
@@ -121,7 +127,6 @@ export class OrderService {
             quantity: {
               increment: order.quantity,
             },
-            completionDate: null,
           },
         });
       }
