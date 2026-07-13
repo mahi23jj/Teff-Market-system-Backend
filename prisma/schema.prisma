@@ -114,6 +114,9 @@ model Order {
   totalPrice  Decimal     @map("total_price") @db.Decimal(18, 2)
   status      OrderStatus @default(pending)
   createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  completionDate DateTime?   @map("completion_date")
+  
 
   customer    User        @relation("CustomerOrders", fields: [customerId], references: [id])
   farmer      User        @relation("FarmerOrders", fields: [farmerId], references: [id])

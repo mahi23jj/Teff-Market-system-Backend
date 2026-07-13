@@ -75,7 +75,7 @@ export class OrderService {
   }
 
 
-  
+
 
   // ✅ UPDATE ORDER STATUS (CORE LOGIC FIXED)
   static async updateOrderStatus(orderId: string, newStatus: OrderStatus) {
@@ -102,6 +102,7 @@ export class OrderService {
             quantity: {
               decrement: order.quantity,
             },
+            completionDate: new Date(),
           },
         });
       }
@@ -120,6 +121,7 @@ export class OrderService {
             quantity: {
               increment: order.quantity,
             },
+            completionDate: null,
           },
         });
       }
