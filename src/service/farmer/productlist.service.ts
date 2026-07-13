@@ -1,24 +1,26 @@
 import { ListingStatus } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import { CreateProductListType } from "../../validation/farmer/productlist.validation";
+import { MarketIntelligenceService } from "./dashboard.service";
+import { cacheDelete } from "./cache/redis.service";
 
 
 export class ProductListService {
   // ✅ GET ALL LISTINGS (farmer only)
   static async getProductList(farmerId: string) {
-  return prisma.listing.findMany({
-    where: {
-      farmerId,
-    },
-    include: {
-      productType: true,
-      images: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-}
+    return prisma.listing.findMany({
+      where: {
+        farmerId,
+      },
+      include: {
+        productType: true,
+        images: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
 
 
   // ✅ GET PRODUCT TYPES (for dropdown)
@@ -73,6 +75,12 @@ export class ProductListService {
       },
     });
 
+    await MarketIntelligenceService.broadcastLatestMarketPrice(
+      listing.productTypeId
+    );
+
+    cacheDelete(`market:overview:${listing.productTypeId}`);
+
     if (imageUrls.length) {
       await prisma.listingImage.createMany({
         data: imageUrls.map((url) => ({
@@ -100,7 +108,7 @@ export class ProductListService {
       where: {
         id: listingId,
         farmerId,
-        isActive: true,
+        status: ListingStatus.active,
       },
     });
 
@@ -118,6 +126,12 @@ export class ProductListService {
         description: data.description ?? listing.description,
       },
     });
+
+    if (data.price) {
+      await MarketIntelligenceService.broadcastLatestMarketPrice(
+        listing.productTypeId
+      );
+    }
 
     // optional image replace
     if (data.images?.length) {
