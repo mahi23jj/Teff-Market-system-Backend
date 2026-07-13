@@ -97,9 +97,14 @@ export class MarketIntelligenceService {
           status:
             OrderStatus.completed,
 
-          createdAt: {
+          completionDate: {
             gte: today
           }
+
+          /*  createdAt: {
+             gte: today
+           } */
+
 
         },
 
@@ -120,7 +125,7 @@ export class MarketIntelligenceService {
           status:
             OrderStatus.completed,
 
-          createdAt: {
+          completionDate: {
             gte: month
           }
 
